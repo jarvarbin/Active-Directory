@@ -68,3 +68,55 @@ This will print the IP address of the domain controller in the active directory.
 
 
 
+
+
+# Active-Directory -  list all username and ip of the internal network domain in the active directory
+
+
+
+
+Here is a simple example of how to write a Python program that lists all the user names and IP addresses of the internal network domain in an active directory:
+
+```import ldap
+
+# Set the domain name of the active directory
+domain_name = "mydomain.local"
+
+# Set the LDAP server URL and port
+server_url = f"ldap://{domain_name}:389"
+
+# Connect to the LDAP server
+server = ldap.initialize(server_url)
+
+# Bind to the LDAP server using the domain administrator credentials
+server.simple_bind_s("Administrator", "password")
+
+# Set the search base and filter to get all users in the domain
+base_dn = f"dc={domain_name}"
+search_filter = "(objectClass=user)"
+
+# Search for all users in the domain
+results = server.search_s(base_dn, ldap.SCOPE_SUBTREE, search_filter)
+
+# Print the user names and IP addresses of all users in the domain
+print("User names and IP addresses:")
+for dn, entry in results:
+  # Get the user name and IP address from the LDAP entry
+  user_name = entry["sAMAccountName"][0].decode("utf-8")
+  ip_address = entry["ipHostNumber"][0].decode("utf-8")
+
+  # Print the user name and IP address
+  print(f"{user_name}: {ip_address}")
+
+# Unbind from the LDAP server and close the connection
+server.unbind_s()
+```
+This code uses the ldap module in Python to connect to the active directory and search for all users in the domain. It then prints the user names and IP addresses of all users in the domain.
+
+To run this code, you will need to install the ldap module using pip:
+
+```$ pip install ldap```
+Then, you can save the code to a file and run it using the python command:
+
+```$ python user_list.py```
+This will print the user names and IP addresses of all users in the active directory. Note that you will need to provide the correct domain name and administrator credentials in the domain_name, server_url, and server.simple_bind_s() function call for this code to work correctly. Additionally, this code may not work if the domain controller is not reachable from the network you are running this code on.
